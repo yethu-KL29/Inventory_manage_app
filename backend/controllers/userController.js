@@ -3,13 +3,13 @@ const User = require('../models/userModel')
 
 const registerUser = async (req, res) => {
    
-        const {name, email, password, phone} = req.body;
+        const {name, email, password} = req.body;
         const user = await User.findOne({email});
         if(user) return res.status(400).json({msg: 'The email already exists.'})
         if(password.length < 6) return res.status(400).json({msg: 'Password is at least 6 characters long.'})
        
         try {
-        const user = new User({name, email, password, phone});
+        const user = new User({name, email, password});
         await user.save();
 
         }catch(err){

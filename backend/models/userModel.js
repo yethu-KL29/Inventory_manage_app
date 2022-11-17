@@ -11,13 +11,13 @@ const userSchema = new Schema({
         required:[true, 'Please enter an email'],
         unique: true,
         trim : true,
-        match:[/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 
-        'Please enter a valid email address']
+        // match:[/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 
+        // 'Please enter a valid email address']
     },
     password: {
         type: String,
         required: [true, 'Please enter a password'],
-        minlength: [6, 'Minimum password length is 6 characters']
+        minlength: [5, 'Minimum password length is 6 characters']
     },
     photo: {
         type: String,
@@ -25,7 +25,7 @@ const userSchema = new Schema({
     },
     phone: {
         type: String,
-        required: [true, 'Please enter a phone number'],
+       
     },
     bio: {
         type: String,
