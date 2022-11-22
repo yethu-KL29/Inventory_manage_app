@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const hashedPass= bcrypt.hashSync(password)
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
 
@@ -31,9 +32,20 @@ const userSchema = new Schema({
         type: String,
         default: 'Hey there! I am using Social Media App.'
     },
-     
+    
 
 
 }, {timestamps: true})
+userSchema.pre('save', async function(next){
+    if(!this.isModified('password')){
+        next()
+    }
+    const salt = await bcrypt.genSalt(10)
+    hashedPass = await bcrypt.hash(this.password, salt)
+    this.password = hashedPass
+}
+)
+
+
 
 module.exports = mongoose.model('User', userSchema)
