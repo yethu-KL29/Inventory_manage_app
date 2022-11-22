@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const hashedPass= bcrypt.hashSync(password)
+const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
 
