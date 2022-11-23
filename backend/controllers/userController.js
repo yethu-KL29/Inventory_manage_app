@@ -90,7 +90,20 @@ const login=async(req,res,next)=>{
     return res.status(200).json({msg:"login sucessfully",user})
 }
 
-
+const loginStatus = async (req, res) => {
+    const cookie = req.headers.cookie;
+        const token = cookie.split("=")[1];
+    if (!token) {
+      return res.json(false);
+    }
+    // Verify Token
+    const verified = jwt.verify(token, process.env.JWT_SECRETKEY);
+    if (verified) {
+      return res.json(true);
+    }
+    return res.json(false);
+  };
+  
 const logout = async(req,res,next)=>{
     res.cookie('token', "", {
         path :"/",
@@ -120,3 +133,4 @@ const getUser=async(req,res,next)=>{
     exports.login = login
     exports.logout = logout
     exports.getUser=getUser
+    exports.loginStatus=loginStatus
