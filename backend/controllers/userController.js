@@ -55,6 +55,11 @@ const registerUser = async(req, res) => {
 
 const login=async(req,res,next)=>{
     const {email,password} = req.body;
+    const generateToken = (id) => {
+        return jwt.sign({id}, process.env.JWT_SECRETKEY, {
+            expiresIn: '30d'
+        })
+    }
     if(!email || !password){
         return res.status(400).json({msg: "Please fill in all fields"})
     }
@@ -102,7 +107,7 @@ const logout = async(req,res,next)=>{
 const getUser=async(req,res,next)=>{    
     let user;
     try{
-        user = await User.findById();
+        user = await User.findById(req.user._id);
     }catch(err){
         console.log(err)
     }
