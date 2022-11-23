@@ -84,6 +84,8 @@ const login=async(req,res,next)=>{
     }
     return res.status(200).json({msg:"login sucessfully",user})
 }
+
+
 const logout = async(req,res,next)=>{
     res.cookie('token', "", {
         path :"/",
@@ -96,6 +98,20 @@ const logout = async(req,res,next)=>{
     return res.status(200).json({msg:"logout sucessfully"})
 }
 
+
+const getUser=async(req,res,next)=>{    
+    let user;
+    try{
+        user = await User.findById();
+    }catch(err){
+        console.log(err)
+    }
+    if(!user){
+        return res.status(400).json({msg: "User does not exist"})
+    }
+    return res.status(200).json({user})
+}
     exports.registerUser = registerUser
     exports.login = login
     exports.logout = logout
+    exports.getUser=getUser
