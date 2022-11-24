@@ -154,6 +154,25 @@ const updateUser = async(req,res,next)=>{
 
     
 }
+const changePass = async(req,res,next)=>{
+    const {oldPassword,password} = req.body;
+    const user = await User.findById(req.user._id);
+    if(!user){
+        return res.status(400).json({msg: "User does not exist"})
+    }
+    if(!oldPassword || !password){
+        return res.status(400).json({msg: "Please fill in all fields"})
+    }
+    const isPasswordMatch = await bcrypt.compare(oldPassword,user.password)
+    if(!isPasswordMatch){
+        return res.status(400).json({msg: "Invalid PASSWORD"})
+    }
+    user.password = password;
+    await user.save();
+    return res.status(200).json({msg:"password changed sucessfully"})
+}
+
+
 
     exports.registerUser = registerUser
     exports.login = login
@@ -161,3 +180,4 @@ const updateUser = async(req,res,next)=>{
     exports.getUser=getUser
     exports.loginStatus=loginStatus
     exports.updateUser=updateUser
+    exports.changePass=changePass
