@@ -1,6 +1,8 @@
 const User = require('../models/userModel')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const crypto = require("crypto")
+const Token = require("../models/tokenModel")
 
 const registerUser = async(req, res) => {
 
@@ -174,6 +176,40 @@ const changePass = async(req,res,next)=>{
 
 
 
+const forgotPassword =async (req, res) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+  
+    if (!user) {
+      res.status(404);
+      throw new Error("User does not exist");
+    }
+  
+    // Delete token if it exists in DB
+    // let token = await Token.findOne({ userId: user._id });
+    // if (token) {
+    //   await token.deleteOne();
+    // }
+  
+    // Create Reste Token
+    let resetToken = crypto.randomBytes(32).toString("hex") + user._id;
+    console.log(resetToken);
+  
+    // Hash token before saving to DB
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+  
+    // Save Token to DB
+    await new Token({
+      userId: user._id,
+      token: hashedToken,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 30 * (60 * 1000), // Thirty minutes
+    }).save();
+}
+
     exports.registerUser = registerUser
     exports.login = login
     exports.logout = logout
@@ -181,3 +217,4 @@ const changePass = async(req,res,next)=>{
     exports.loginStatus=loginStatus
     exports.updateUser=updateUser
     exports.changePass=changePass
+    exports.forgotPassword=forgotPassword
